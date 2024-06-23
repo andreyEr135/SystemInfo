@@ -37,13 +37,13 @@ void serialCore::getSerialData()
   if (data.indexOf(ramAllStr) >= 0)
   {
     data = data.substring(data.indexOf(ramAllStr) + ramAllStr.length() + 1);
-    ramAllMem = data + "mb";
+    ramAllMem = data + "gb";
   }
 
   if (data.indexOf(ramUseStr) >= 0)
   {
     data = data.substring(data.indexOf(ramUseStr) + ramUseStr.length() + 1);
-    ramUseMem = data + "mb";
+    ramUseMem = data + "gb";
   }
 
   if (data.indexOf(dateDev) >= 0)

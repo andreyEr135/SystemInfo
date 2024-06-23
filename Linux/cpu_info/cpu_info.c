@@ -89,7 +89,9 @@ void getMemLoad()
 	uint free = ( ( info.freeram >> 10 ) * info.mem_unit ) >> 10;
 	uint use = total - free;
 	uint usePrcnt = (use*100)/total;
-	printf("%u %u %u\n", total, use, usePrcnt);
+	float total_f = (float)total/1024;
+	float use_f = (float)use/1024;
+	printf("%.02f %.02f %u\n", total_f, use_f, usePrcnt);
 }
 
 /**

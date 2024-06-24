@@ -8,6 +8,16 @@ serialCore::serialCore()
 void serialCore::getSerialData()
 {
   String data = Serial.readStringUntil('\n');
+
+  if (data.indexOf(actStr) >= 0)
+  {
+    if (backlight) countNoAct = 0;
+    else {
+      countNoAct = 0;
+      backlight = true;
+    }
+    ledState = true;
+  }
   if (data.indexOf(wifiConnectStr) >= 0)
   {
     data = data.substring(data.indexOf(wifiConnectStr) + wifiConnectStr.length() + 1);
@@ -25,7 +35,6 @@ void serialCore::getSerialData()
   {
     data = data.substring(data.indexOf(wifiDlSpeedStr) + wifiDlSpeedStr.length() + 1);
     dlSpeed = data;
-    offActLed();
   }
 
   if (data.indexOf(ramUsageStr) >= 0)
@@ -84,7 +93,6 @@ void serialCore::getSerialData()
 
   if (data.indexOf(cpuLoadStr) >= 0)
   {
-    onActLed();
     data = data.substring(data.indexOf(cpuLoadStr) + cpuLoadStr.length() + 1);
     cpuLoad = atoi(data.c_str());
   }

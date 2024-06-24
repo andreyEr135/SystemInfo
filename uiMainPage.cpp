@@ -61,5 +61,7 @@ void reshowMainPage()
   reshowCpuTempLabel();
   reshowCpuSpinner();
 
+  if (ledState != oldLedState) reshowActLed();
+
 
 }

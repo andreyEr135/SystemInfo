@@ -18,6 +18,8 @@ class serialCore
 
     private:
         // WiFi
+        const String actStr = "Act";
+        // WiFi
         const String wifiConnectStr = "WiFiStatus";
         const String wifiUpSpeedStr = "WifiUpSpeed";
         const String wifiDlSpeedStr = "WifiDlSpeed";

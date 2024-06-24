@@ -59,3 +59,10 @@ int volume = 0;
 // CPU
 int cpuLoad = 0;
 String cpuTemp = "";
+
+bool oldLedState = false;
+bool ledState = false;
+int countLed = 0;
+
+int countNoAct = 0;
+bool backlight = true;

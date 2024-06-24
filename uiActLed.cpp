@@ -1,5 +1,18 @@
 #include "uiActLed.h"
 
+void onActLed()
+{
+  //ledState = true;
+  countLed = 0;
+  lv_led_set_brightness(ledAct, 150);
+}
+void offActLed()
+{
+  //ledState = false;
+  countLed = 0;
+  lv_led_set_brightness(ledAct, 10);
+}
+
 void showActLed()
 {
   ledAct = lv_led_create(lv_scr_act());
@@ -9,11 +22,11 @@ void showActLed()
   offActLed();
 }
 
-void onActLed()
+
+
+void reshowActLed()
 {
-  lv_led_set_brightness(ledAct, 150);
-}
-void offActLed()
-{
-  lv_led_set_brightness(ledAct, 10);
+  if (ledState) onActLed();
+  else offActLed();
+  oldLedState = ledState;
 }

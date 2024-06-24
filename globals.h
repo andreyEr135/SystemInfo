@@ -186,6 +186,14 @@ extern int volume;
 extern int cpuLoad;
 extern String cpuTemp;
 
+extern bool oldLedState;
+extern bool ledState;
+extern int countLed;
+
+extern int countNoAct;
+extern bool backlight;
+
+
 
 
 #endif 

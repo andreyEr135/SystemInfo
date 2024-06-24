@@ -15,6 +15,8 @@
 //#include "uiModules.h"
 
 #include "serialCore.h"
+#include "uiActLed.h"
+
 
 serialCore *serialData;
 
@@ -23,68 +25,51 @@ static lv_color_t buf[screenWidth * 10];
 
 bool dateTimeSync = false;
 
-//every 1 sec
+
+int bl;
+void offBacklight()
+{
+  if (bl == 255)
+  {
+    for (bl = 255; bl>=0; bl--)
+    {
+      tft.setBrightness(bl);
+      delay(2);
+    }
+  }
+}
+
+void onBacklight()
+{
+  if (bl != 255)
+  {
+    for (bl = 0; bl<=255; bl++)
+    {
+      tft.setBrightness(bl);
+      //delay(2);
+    }
+  }
+}
+
+//every 100 ms
 void tickTimer(lv_timer_t * timer)
 {
-  serialData->getSerialData();
-
-  // if (!dateTimeSync)
-  // {       
-  //   if ((timeStr != "") && (dateStr != ""))
-  //   {
-  //     int d_date = 0;
-  //     int m_date = 0;
-  //     int y_date = 0;
-  //     int h_time = 0;
-  //     int m_time = 0;
-
-  //     String str = dateStr;
-  //     int i = 0;
-  //     while (str.indexOf("/") >= 0)
-  //     {
-  //       String s = str.substring(0, str.indexOf("/"));
-  //       if (i == 0) d_date = atoi(s.c_str());
-  //       else if (i == 1) m_date = atoi(s.c_str());
-  //       str = str.substring(str.indexOf("/") + 1);
-  //       i++;
-  //     }
-  //     y_date = atoi(str.c_str());
-
-  //     str = timeStr;
-  //     while (str.indexOf(":") >= 0)
-  //     {
-  //       String s = str.substring(0, str.indexOf(":"));
-  //       h_time = atoi(s.c_str());
-  //       str = str.substring(str.indexOf(":") + 1);
-  //     }
-  //     m_time = atoi(str.c_str());
-  //     dateTimeSync = true;
-
-  //     //setTime(h_time, m_time, 0, d_date, m_date, y_date);
-      
-  //   }
-  // }
-  // if (ramUsagePrcnt == 100) ramUsagePrcnt = 0;
-  // else ramUsagePrcnt++;
-  
-  // if (hddUseMem == 100) hddUseMem = 0;
-  // else hddUseMem++;
-
-  // if (volume == 100) volume = 0;
-  // else volume++;
-
-  // if (cpuLoad == 100) cpuLoad = 0;
-  // else cpuLoad++;
-
-  // if (cnt == 5) 
-  // {
-  //   wifiConnect = !wifiConnect;
-  //   cnt = 0;
-  // } else cnt++;
+  if (countNoAct > 30*10) backlight = false;
+  if (countLed == 5) ledState = false;
+  if (backlight) 
+  {
+    bl = 255;
+    tft.setBrightness(bl);
+    //onBacklight();
+  }
+  else 
+  {
+    offBacklight();
+  }
 
   reshowMainPage();
-
-  
+  if (ledState) countLed++;
+  countNoAct++;
   
 }
 
@@ -125,7 +110,8 @@ void displaySetup()
 {
   tft.begin();
   tft.setRotation(3);
-  tft.setBrightness(255);
+  bl = 255;
+  tft.setBrightness(bl);
 
   lv_init();
   lv_disp_draw_buf_init(&draw_buf, buf, NULL, screenWidth * 10);
@@ -170,14 +156,14 @@ void displaySetup()
   return true;
 }*/
 
-/*void Task_Audio(void *pvParameters) // This is a task.
+void Task_Audio(void *pvParameters) // This is a task.
 {
   while (true)
   {
-    if (audioPlaying) audio.loop();
-    delay(1);
+    serialData->getSerialData();
+    delay(100);
   }
-}*/
+}
 
 void setup() {
   displaySetup();
@@ -190,7 +176,7 @@ void setup() {
   delay(1000); 
   dispTimer = lv_timer_create(tickTimer, 100,  NULL);
 
-  //xTaskCreatePinnedToCore(Task_Audio, "Task_Audio", 10240, NULL, 3, NULL, 0);
+  xTaskCreatePinnedToCore(Task_Audio, "Task_Audio", 10240, NULL, 3, NULL, 0);
   
   
 }

@@ -10,8 +10,9 @@
 #include "uiModules.h"
 
 extern void showActLed();
-extern void onActLed();
-extern void offActLed();
+//extern void onActLed();
+//extern void offActLed();
+extern void reshowActLed();
 
 
 #endif 

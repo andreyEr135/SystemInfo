@@ -12,7 +12,6 @@
 #include <TimeLib.h>
 
 #include "uiMainPage.h"
-//#include "uiModules.h"
 
 #include "serialCore.h"
 #include "uiActLed.h"
@@ -125,43 +124,25 @@ void displaySetup()
   static lv_indev_drv_t indev_drv;
   lv_indev_drv_init(&indev_drv);
   indev_drv.type = LV_INDEV_TYPE_POINTER;
-  //indev_drv.read_cb = my_touch_read;
   lv_indev_drv_register(&indev_drv);  
 }
 
-/*bool wifiSetup()
-{
-  wifiConnect = false;
-  audio_showstation("Waiting connection to WiFi");
-  audio_showstreamtitle(ssid.c_str());
-  WiFi.disconnect();
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid.c_str(), password.c_str());
-  int t_sec = 0;
-  while (WiFi.status() != WL_CONNECTED) 
-  {
-    t_sec++;
-    if (t_sec > TIMEOUT_WIFI_CONNECT)
-    {
-      if (WiFi.status() != WL_CONNECTED)
-      {
-        audio_showstation("Connect to WiFi error");
-        audio_showstreamtitle(ssid.c_str());
-        return false;
-      }
-    }
-    delay(1000);
-  }  
-  audio_showstation("Connected to WiFi");
-  return true;
-}*/
+bool initBoard;
 
-void Task_Audio(void *pvParameters) // This is a task.
+void Task_SerialData(void *pvParameters) // This is a task.
 {
   while (true)
   {
-    serialData->getSerialData();
-    delay(100);
+    if (initBoard)
+    {
+      serialData->writeBoardInfo();
+      if (serialData->readOk()) initBoard = false;
+      delay(500);
+    } else
+    {
+      serialData->getSerialData();
+      delay(100);
+    }
   }
 }
 
@@ -173,17 +154,12 @@ void setup() {
   CreateControls();
   serialData = new serialCore();
 
-  while (1)
-  {
-    serialData->writeBoardInfo();
-    if (serialData->readOk()) break;
-    delay(500);
-  }
+  initBoard = true;
 
   delay(1000); 
   dispTimer = lv_timer_create(tickTimer, 100,  NULL);
 
-  xTaskCreatePinnedToCore(Task_Audio, "Task_Audio", 10240, NULL, 3, NULL, 0);
+  xTaskCreatePinnedToCore(Task_SerialData, "Task_SerialData", 10240, NULL, 3, NULL, 0);
   
   
 }

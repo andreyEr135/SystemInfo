@@ -105,4 +105,17 @@ void serialCore::getSerialData()
 
 }
 
+void serialCore::writeBoardInfo()
+{
+  Serial.println("SystemInfo Board");
+}
+
+bool serialCore::readOk()
+{
+  bool res = false;
+  String data = Serial.readStringUntil('\n');
+  if (data == "OK") res = true;
+  return res;
+}
+
 

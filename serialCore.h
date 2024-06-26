@@ -15,6 +15,8 @@ class serialCore
     public:
         serialCore();
         void getSerialData();
+        void writeBoardInfo();
+        bool readOk();
 
     private:
         // WiFi

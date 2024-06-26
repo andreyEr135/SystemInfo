@@ -1,0 +1,5 @@
+KERNEL=="ttyUSB[0-9]*",MODE="0666"
+KERNEL=="ttyACM[0-9]*",MODE="0666"
+
+SUBSYSTEM=="tty", ACTION=="add", KERNEL=="ttyUSB[0-9]*",RUN+="/opt/cpu_info/DevConnect %k"
+SUBSYSTEM=="tty", ACTION=="remove", KERNEL=="ttyUSB[0-9]*",RUN+="/opt/cpu_info/DevDisconnect %k"

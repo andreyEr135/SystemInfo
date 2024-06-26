@@ -173,6 +173,13 @@ void setup() {
   CreateControls();
   serialData = new serialCore();
 
+  while (1)
+  {
+    serialData->writeBoardInfo();
+    if (serialData->readOk()) break;
+    delay(500);
+  }
+
   delay(1000); 
   dispTimer = lv_timer_create(tickTimer, 100,  NULL);
 

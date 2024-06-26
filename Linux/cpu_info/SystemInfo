@@ -38,32 +38,106 @@ ratestr()
 
 }
 
+init() {
+	port=$1
+	stty -F $port 115200
+	#sleep 0.5
+	rm /tmp/boardinfo
+	cat $port > /tmp/boardinfo &
+	pid=$!
+	sleep 3
+	str=`cat /tmp/boardinfo`
+	if [ -n "$str" ]
+	then 
+		echo $str >> /opt/log
+		id=`strindex "$str" "SystemInfo Board"`
+		if (( $id >= 0 ))
+		then
+			kill $pid
+			stty -F $port 0:4:1cb2:0:3:1c:7f:15:4:0:1:0:11:13:1a:0:12:f:17:16:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0
+			sleep 0.5
+			echo -e "OK\n" > /dev/ttyUSB0
+		else
+			echo Board Unknown!
+			kill $pid
+			exit
+		fi
+	else
+		echo Board Unknown!
+		kill $pid
+		exit
+	fi
+}
 
-console=$1
-if [ -n "$console" ]
+
+initF=0
+console=/dev/ttyUSB0
+str=$1
+
+if [ $# != 0 ]
 then
-	console=/dev/$console
-else
-	console=/dev/ttyUSB0
+	for param in "$@"
+	do
+		if [ -n "$param" ]
+		then 
+			if [ "$param" == "-i" ]
+			then
+				initF=1
+			else
+				console=$param
+			fi
+		fi
+	done
 fi
 
-stty -F $console 0:4:1cb2:0:3:1c:7f:15:4:0:1:0:11:13:1a:0:12:f:17:16:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0
-#stty -F $console 115200
-sleep 0.5
+cd $(dirname $0)
+
+console=`cat /tmp/port`
+if [ ! -n $console ]
+then 
+	console="/dev/ttyUSB0"
+fi
+
+if [ $initF == 1 ]
+then
+	init $console
+fi
+
+p=${console:5}
+
 
 rm /tmp/wifi.log
 vnstat -l -i $wifiNet --json >> /tmp/wifi.log &
 
 while ((1))
 do
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "Act\n" > $console
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "CpuLoad=`./cpu_info cpu`\n" > $console
 
 	temp=`cat /sys/class/thermal/thermal_zone0/temp`
 	temp=$((temp/1000))
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "DateStr=`date +"%d/%m/%Y"`\n" > $console
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "TimeStr=`date +"%H:%M"`\n" > $console
-	
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "CpuTemp=$temp\n" > $console
 	
 	
@@ -71,8 +145,21 @@ do
 	memall=`echo $strmem | awk '{ print $1 }'`
 	memusemb=`echo $strmem | awk '{ print $2 }'`
 	memuse=`echo $strmem | awk '{ print $3 }'`
+	
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "RamUsage=$memuse\n" > $console
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "RamAll=$memall\n" > $console
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "RamUse=$memusemb\n" > $console
 	
 	strhdd=`df -h / | grep "/"`
@@ -80,11 +167,28 @@ do
 `	hddFree=`echo $strhdd | awk '{ print $4 }' | head -c -2`
 	hddUseMb=`echo $strhdd | awk '{ print $3 }' | head -c -2`
 	hddUse=$((hddUseMb*100/hddAll))
+	
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "HddUseMem=$hddUse\n" > $console
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "HddAllMem=$hddAll\n" > $console
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "HddFreeMem=$hddFree\n" > $console
 
-	vol=`amixer -c 1 -M -D pulse get Master | grep -m 1 -o -E '[[:digit:]]+%' | head -c -2`
+	vol=`cat /tmp/vol`
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "Volume=$vol\n" > $console
 
 	wifiLink=`ip a | grep $wifiNet | grep "state UP"`
@@ -93,6 +197,10 @@ do
 		wifiLink=1
 	else
 		wifiLink=0
+	fi
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
 	fi
 	echo -e "WiFiStatus=$wifiLink\n" > $console
 	
@@ -113,7 +221,15 @@ do
 	wifiUp=`ratestr "$wifiUp"`
 	wifiDl=`ratestr "$wifiDl"`
 	
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "WifiUpSpeed=$wifiUp\n" > $console
+	if [ ! -d /sys/class/tty/$p ]
+	then
+		exit
+	fi
 	echo -e "WifiDlSpeed=$wifiDl\n" > $console
 	#sleep 0.5
 done

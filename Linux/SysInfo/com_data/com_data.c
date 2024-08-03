@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
 				memset(buf, 0, sizeof(buf));
 				read(f_cpu, buf, sizeof(buf));
 				uData.data.cpu_load = atoi(buf);
-				printf("cpuload %u\n", uData.data.cpu_load);
+				//printf("cpuload %u\n", uData.data.cpu_load);
 				close(f_cpu);
 			}
 
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
 				memset(buf, 0, sizeof(buf));
 				read(f_cpuTemp, buf, sizeof(buf));
 				uData.data.cpu_temp = atoi(buf);
-				printf("cpu_temp %u\n", uData.data.cpu_temp);
+				//printf("cpu_temp %u\n", uData.data.cpu_temp);
 				close(f_cpuTemp);
 			}
 			
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
 				memset(buf, 0, sizeof(buf));
 				read(f_wifiStat, buf, sizeof(buf));
 				uData.data.wifiStatus = atoi(buf);
-				printf("wifiStatus %u\n", uData.data.wifiStatus);
+				//printf("wifiStatus %u\n", uData.data.wifiStatus);
 				close(f_wifiStat);
 			}
 
@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
 			{
 				memset(uData.data.wifiDl, 0, sizeof(uData.data.wifiDl));
 				read(f_wifiDl, uData.data.wifiDl, sizeof(uData.data.wifiDl));
-				printf("wifiDl %s\n", uData.data.wifiDl);
+				//printf("wifiDl %s\n", uData.data.wifiDl);
 				close(f_wifiDl);
 			}
 
@@ -250,7 +250,7 @@ int main(int argc, char *argv[])
 			{
 				memset(uData.data.wifiUp, 0, sizeof(uData.data.wifiUp));
 				read(f_wifiUp, uData.data.wifiUp, sizeof(uData.data.wifiUp));
-				printf("wifiUp %s\n", uData.data.wifiUp);
+				//printf("wifiUp %s\n", uData.data.wifiUp);
 				close(f_wifiUp);
 			}
 
@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
 				memset(buf, 0, sizeof(buf));
 				read(f_ramStat, buf, sizeof(buf));
 				uData.data.ramStat = atoi(buf);
-				printf("ramStat %u\n", uData.data.ramStat);
+				//printf("ramStat %u\n", uData.data.ramStat);
 				close(f_ramStat);
 			}
 
@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
 				memset(buf, 0, sizeof(buf));
 				read(f_ramAll, buf, sizeof(buf));
 				sscanf(buf, "%f", &uData.data.ramAll);
-				printf("ramAll %.2f\n", uData.data.ramAll);
+				//printf("ramAll %.2f\n", uData.data.ramAll);
 				close(f_ramAll);
 			}
 
@@ -280,16 +280,16 @@ int main(int argc, char *argv[])
 				memset(buf, 0, sizeof(buf));
 				read(f_ramUse, buf, sizeof(buf));
 				sscanf(buf, "%f", &uData.data.ramUse);
-				printf("ramUse %.2f\n", uData.data.ramUse);
+				//printf("ramUse %.2f\n", uData.data.ramUse);
 				close(f_ramUse);
 			}
 
 			time_t t = time(NULL);
   			struct tm tm = *localtime(&t);
-  			printf("date: %02d/%02d/%04d\n", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
+  			//printf("date: %02d/%02d/%04d\n", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
 			sprintf(uData.data.date, "%02d/%02d/%04d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
 			
-			printf("time: %02d:%02d\n", tm.tm_hour, tm.tm_min);
+			//printf("time: %02d:%02d\n", tm.tm_hour, tm.tm_min);
 			sprintf(uData.data.time, "%02d:%02d", tm.tm_hour, tm.tm_min);
 
 
@@ -299,7 +299,7 @@ int main(int argc, char *argv[])
 				memset(buf, 0, sizeof(buf));
 				read(f_hddStat, buf, sizeof(buf));
 				uData.data.hddStat = atoi(buf);
-				printf("hddStat %u\n", uData.data.hddStat);
+				//printf("hddStat %u\n", uData.data.hddStat);
 				close(f_hddStat);
 			}
 
@@ -309,7 +309,7 @@ int main(int argc, char *argv[])
 				memset(buf, 0, sizeof(buf));
 				read(f_hddAll, buf, sizeof(buf));
 				sscanf(buf, "%f", &uData.data.hddAll);
-				printf("hddAll %.0f\n", uData.data.hddAll);
+				//printf("hddAll %.0f\n", uData.data.hddAll);
 				close(f_hddAll);
 			}
 
@@ -319,7 +319,7 @@ int main(int argc, char *argv[])
 				memset(buf, 0, sizeof(buf));
 				read(f_hddFree, buf, sizeof(buf));
 				sscanf(buf, "%f", &uData.data.hddFree);
-				printf("hddFree %.0f\n", uData.data.hddFree);
+				//printf("hddFree %.0f\n", uData.data.hddFree);
 				close(f_hddFree);
 			}
 
@@ -329,23 +329,15 @@ int main(int argc, char *argv[])
 				memset(buf, 0, sizeof(buf));
 				read(f_hddStat, buf, sizeof(buf));
 				uData.data.vol = atoi(buf);
-				printf("vol %u\n", uData.data.vol);
+				//printf("vol %u\n", uData.data.vol);
 				close(f_vol);
 			}
-
-
-
-
-
-
-
-
 			
-			for (int i = 0; i < sizeof(uData.buf); i++)
-			{
-				printf("%02X ", uData.buf[i]);
-			}
-			printf("\n");	
+			//for (int i = 0; i < sizeof(uData.buf); i++)
+			//{
+			//	printf("%02X ", uData.buf[i]);
+			//}
+			//printf("\n");	
 
 			int bWrited = write(f_port, uData.buf, sizeof(uData.buf));
 			if (bWrited < (int)sizeof(uData.buf)) throw("Write to port");
@@ -383,8 +375,6 @@ int main(int argc, char *argv[])
 
 		printf("Error: %s\n", error_message);
 		return -1;
-
-
 
 	}
 	

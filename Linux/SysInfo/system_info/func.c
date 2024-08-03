@@ -210,7 +210,7 @@ bool readfiletext( std::string filename, Tstrlist& text )
 std::string ratestr(std::string input)
 {
     string out = input;
-    int id = out.find("mbit/s");
+    int id = out.find("Mbit/s");
     if (id >= 0)
     {
         out = out.substr(0, id - 1);

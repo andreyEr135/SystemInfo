@@ -108,7 +108,7 @@ void CreateControls(void)
 void displaySetup()
 {
   tft.begin();
-  tft.setRotation(3);
+  tft.setRotation(1);
   bl = 255;
   tft.setBrightness(bl);
 

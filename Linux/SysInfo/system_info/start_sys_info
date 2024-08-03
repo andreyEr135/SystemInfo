@@ -1,0 +1,10 @@
+#!/bin/bash
+
+wifiNet="wlp4s0"
+
+cd $(dirname $0)
+
+rm /tmp/wifi.log
+vnstat -l -i $wifiNet --json >> /tmp/wifi.log &
+sleep 5
+./system_info

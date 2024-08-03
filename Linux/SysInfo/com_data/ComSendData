@@ -1,0 +1,81 @@
+#!/bin/bash
+
+#For this script you need to install vnstat!!!
+
+strindex() {
+	 x="${1%%"$2"*}"
+	[[ "$x" = "$1" ]] && echo -1 || echo "${#x}"
+}
+
+init() {
+	port=$1
+	stty -F $port 115200
+	#sleep 0.5
+	rm /tmp/boardinfo
+	cat $port > /tmp/boardinfo &
+	pid=$!
+	sleep 3
+	str=`cat /tmp/boardinfo`
+	if [ -n "$str" ]
+	then 
+		echo $str >> /opt/log
+		id=`strindex "$str" "SystemInfo Board"`
+		if (( $id >= 0 ))
+		then
+			kill $pid
+			sleep 2
+			stty -F $port 0:4:1cb2:0:3:1c:7f:15:4:0:1:0:11:13:1a:0:12:f:17:16:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0
+			sleep 1
+			echo -e "OK\n" > /dev/ttyUSB0
+		else
+			echo Board Unknown!
+			kill $pid
+			exit
+		fi
+	else
+		echo Board Unknown!
+		kill $pid
+		exit
+	fi
+}
+
+
+initF=0
+console=/dev/ttyUSB0
+str=$1
+
+if [ $# != 0 ]
+then
+	for param in "$@"
+	do
+		if [ -n "$param" ]
+		then 
+			if [ "$param" == "-i" ]
+			then
+				initF=1
+			else
+				console=$param
+			fi
+		fi
+	done
+fi
+
+cd $(dirname $0)
+
+console=`cat /tmp/port`
+#console=/dev/ttyUSB0
+if [ ! -n $console ]
+then 
+	console="/dev/ttyUSB0"
+fi
+
+if [ $initF == 1 ]
+then
+	init $console
+	sleep 5
+	#stty -F $console  0:4:1cb2:0:3:1c:7f:15:4:0:1:0:11:13:1a:0:12:f:17:16:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0
+fi
+sleep 2
+#p=${console:5}
+./com_data $console
+

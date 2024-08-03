@@ -1,10 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=Vol
-Name[ru]=Vol
+Name=SystemInfo
+Name[ru]=SystemInfo
 Type=Application
 NoDisplay=false
-Exec=/opt/cpu_info/VolumeInfo
+Exec=/opt/SysInfo/system_info/start_sys_info
 Icon=office-organizer
 X-FLY-IconContext=Applications
 Hidden=false

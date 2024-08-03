@@ -19,6 +19,29 @@ class serialCore
         bool readOk();
 
     private:
+        union _uData
+        {
+          struct 
+          {
+            uint cpu_load; // 4 byte
+            uint cpu_temp; // 4 byte
+            bool wifiStatus; // 1 byte
+            char wifiDl[30]; // 30 byte
+            char wifiUp[30]; // 30 byte
+            uint ramStat; // 4 byte
+            float ramAll; // 4 byte
+            float ramUse; // 4 byte
+            char date[40];
+		        char time[40];
+            uint hddStat; // 4 byte
+            float hddAll; // 4 byte
+            float hddFree; // 4 byte
+            uint vol; // 4 byte 
+          } data;
+          char buf[180];
+        };
+        _uData uData;
+
         // WiFi
         const String actStr = "Act";
         // WiFi

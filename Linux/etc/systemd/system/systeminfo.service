@@ -5,7 +5,7 @@ After=systemd-user-sessions.service
 
 [Service]
 Type=simple
-ExecStart=/opt/cpu_info/SystemInfo -i
+ExecStart=/opt/SysInfo/com_data/ComSendData -i
 User=user
 
 [Install]

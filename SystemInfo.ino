@@ -54,7 +54,7 @@ void onBacklight()
 void tickTimer(lv_timer_t * timer)
 {
   if (countNoAct > 30*10) backlight = false;
-  if (countLed == 5) ledState = false;
+  if (countLed == 2) ledState = false;
   if (backlight) 
   {
     bl = 255;
@@ -136,7 +136,7 @@ void Task_SerialData(void *pvParameters) // This is a task.
     if (initBoard)
     {
       serialData->writeBoardInfo();
-      if (serialData->readOk()) initBoard = false;
+      if (serialData->readOk()) { initBoard = false; delay(1000); }
       delay(500);
     } else
     {
